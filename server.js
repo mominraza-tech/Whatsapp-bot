@@ -1,5 +1,5 @@
 // =========================
-// ✅ WhatsApp Order Bot – FINAL CLEAN VERSION
+// ✅ WhatsApp Order Bot
 // =========================
 const express = require("express");
 const fetch = require("node-fetch"); // node-fetch@2
@@ -114,13 +114,22 @@ app.post("/order", async (req, res) => {
     lastOrderByPhone[phone.replace(/^\+/, "")] = orderId;
 
     console.log(`🧾 New order received: ${name} ${phone} ${orderId}`);
-    await sendTemplateMessage(phone, name, orderId);
+
+    // ✅ Send WhatsApp message only for COD orders
+    if (data.payment_method === "cod") {
+      await sendTemplateMessage(phone, name, orderId);
+      console.log("💬 WhatsApp message sent (COD order).");
+    } else {
+      console.log("⚠️ Non-COD order detected — skipping WhatsApp confirmation message.");
+    }
+
     res.json({ ok: true });
   } catch (err) {
     console.error("Order endpoint error:", err);
     res.status(500).json({ error: "server error" });
   }
 });
+
 
 // === META VERIFY ===
 app.get("/webhook", (req, res) => {
