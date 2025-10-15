@@ -280,5 +280,8 @@ else if (isCancel) {
   }
 });
 
+// ✅ Test route
+app.get('/test', (req, res) => res.send('✅ Server running. Use POST /order to test.'));
+
 // === START SERVER ===
 app.listen(3000, () => console.log("🚀 Server running on port 3000"));
